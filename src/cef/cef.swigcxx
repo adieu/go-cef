@@ -1,0 +1,37 @@
+%module cef
+
+%{
+    #include "include/cef_base.h"
+    #include "include/cef_app.h"
+    #include "objc_wrapper.h"
+%}
+
+#define OS_MACOSX
+#define CEF_EXPORT
+
+%typemap(gotype) (int argc, char** argv) "[]string"
+%typemap(in) (int argc, char** argv) {
+    $1 = $input.len;
+    $2 = (char**)&$input.array;
+}
+
+%rename(equal) operator==;
+%rename(notequal) operator!=;
+%rename(assign) operator=;
+%rename(getvalue) operator CefApp*;
+%rename(gettype) type;
+
+%include "include/internal/cef_types.h"
+%include "include/internal/cef_types_mac.h"
+%include "include/internal/cef_time.h"
+%include "include/internal/cef_ptr.h"
+%include "include/cef_base.h"
+%include "include/cef_app.h"
+
+%include "swig/cef_types_wrappers.h"
+%include "swig/cef_mac.h"
+
+%template(CefRefPtrCefApp) CefRefPtr<CefApp>;
+typedef CefRefPtr<CefApp> CefAppPtr;
+
+%include "objc_wrapper.h"
